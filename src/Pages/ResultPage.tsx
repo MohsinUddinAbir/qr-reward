@@ -1,6 +1,6 @@
 import { useState } from "react";
-import QRCodeScanner from "./Scanner";
 import type { IDetectedBarcode } from "@yudiel/react-qr-scanner";
+import { useBarcodeScanner } from "react-simple-usb-scanner";
 
 type ResultData = {
 	BARCODE: string;
@@ -13,6 +13,16 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 	const [loading] = useState(false);
 	const [record, setRecord] = useState<ResultData | null>(null);
 	const [error, setError] = useState<string | null>(null);
+
+	const { resetBarcode } = useBarcodeScanner({
+		onBarcodeScanned: async (code) => {
+			console.log("Barcode detected via USB:", code);
+			// Trigger your backend API or search here
+			setScanned(true);
+			getRecord(code);
+		},
+		enabled: true, // Listens globally while true
+	});
 
 	const handleScanResult = (result: IDetectedBarcode[]) => {
 		if (result.length > 0) {
@@ -38,6 +48,7 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 	const setGoBackTimer = (seconds = 20) => {
 		setTimeout(() => {
 			onBackClick();
+			resetBarcode();
 		}, seconds * 1000);
 	};
 
@@ -49,7 +60,7 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 				</button>
 			</div>
 			{!scanned ?
-				<QRCodeScanner onResult={handleScanResult} />
+				<div className="text-3xl py-6 text-center font-bold text-pink-500">Scan your Card</div>
 			:	null}
 			{loading ?
 				<div className="text-center text-3xl py-6 text-gray-700">Loading...</div>
