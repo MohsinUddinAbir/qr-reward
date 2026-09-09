@@ -10,7 +10,7 @@ function App() {
 
 	const fetchCSV = async () => {
 		try {
-			const response = await fetch("/data/barcode.csv");
+			const response = await fetch("/barcode.csv");
 			const reader = response.body?.getReader();
 			if (!reader) return;
 
