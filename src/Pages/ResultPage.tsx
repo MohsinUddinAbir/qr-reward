@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useBarcodeScanner } from "react-simple-usb-scanner";
 
 type ResultData = {
