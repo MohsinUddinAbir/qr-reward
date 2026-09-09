@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import QRCodeScanner from "./Scanner";
 import type { IDetectedBarcode } from "@yudiel/react-qr-scanner";
 
@@ -10,7 +10,7 @@ type ResultData = {
 
 const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackClick: () => void }) => {
 	const [scanned, setScanned] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [loading] = useState(false);
 	const [record, setRecord] = useState<ResultData | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
