@@ -1,5 +1,4 @@
 import { useState } from "react";
-import type { IDetectedBarcode } from "@yudiel/react-qr-scanner";
 import { useBarcodeScanner } from "react-simple-usb-scanner";
 
 type ResultData = {
@@ -24,14 +23,14 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 		enabled: true, // Listens globally while true
 	});
 
-	const handleScanResult = (result: IDetectedBarcode[]) => {
-		if (result.length > 0) {
-			const code = result[0].rawValue;
-			console.log(code);
-			setScanned(true);
-			getRecord(code);
-		}
-	};
+	// const handleScanResult = (result: IDetectedBarcode[]) => {
+	// 	if (result.length > 0) {
+	// 		const code = result[0].rawValue;
+	// 		console.log(code);
+	// 		setScanned(true);
+	// 		getRecord(code);
+	// 	}
+	// };
 
 	const getRecord = async (code: string) => {
 		const record = records.find((r) => r["BARCODE"] == code);
@@ -47,8 +46,8 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 
 	const setGoBackTimer = (seconds = 20) => {
 		setTimeout(() => {
-			onBackClick();
 			resetBarcode();
+			onBackClick();
 		}, seconds * 1000);
 	};
 
