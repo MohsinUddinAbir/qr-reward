@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBarcodeScanner } from "react-simple-usb-scanner";
 
 type ResultData = {
@@ -13,16 +13,6 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 	const [record, setRecord] = useState<ResultData | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
-	const { resetBarcode } = useBarcodeScanner({
-		onBarcodeScanned: async (code) => {
-			console.log("Barcode detected via USB:", code);
-			// Trigger your backend API or search here
-			setScanned(true);
-			getRecord(code);
-		},
-		enabled: true, // Listens globally while true
-	});
-
 	// const handleScanResult = (result: IDetectedBarcode[]) => {
 	// 	if (result.length > 0) {
 	// 		const code = result[0].rawValue;
@@ -32,6 +22,15 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 	// 	}
 	// };
 
+	const { resetBarcode } = useBarcodeScanner({
+		onBarcodeScanned: async (code) => {
+			console.log("Barcode detected via USB:", code);
+			getRecord(code);
+			setScanned(true);
+		},
+		enabled: true, // Listens globally while true
+	});
+
 	const getRecord = async (code: string) => {
 		const record = records.find((r) => r["BARCODE"] == code);
 		if (!record) {
@@ -40,7 +39,6 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 		}
 
 		setRecord(record);
-
 		setGoBackTimer();
 	};
 
