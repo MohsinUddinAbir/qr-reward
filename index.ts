@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 const username = process.env.BASE_AUTH_USERNAME || "admin";
 const password = process.env.BASE_AUTH_PASSWORD || "admin";
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5173", "https://qr-reward-three.vercel.app"];
 app.use(
 	cors({
 		credentials: true,
