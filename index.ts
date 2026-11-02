@@ -79,7 +79,7 @@ admin.delete("/api/rewards/:id", async (req, res) => {
 	}
 });
 
-app.use("/admin", admin); ///  basicAuthMiddleware,
+app.use("/admin", basicAuthMiddleware, admin); ///  basicAuthMiddleware,
 
 app.get("/api/rewards", async (req, res) => {
 	try {
