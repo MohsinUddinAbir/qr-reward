@@ -12,7 +12,7 @@ export default defineConfig({
 	plugins: [react(), tailwindcss()],
 	build: {
 		outDir: "../public",
-		emptyOutDir: false,
+		emitAssets: true,
 		rollupOptions: {
 			input: {
 				main: resolve(__dirname, "index.html"),

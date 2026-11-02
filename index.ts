@@ -28,13 +28,11 @@ const basicAuthMiddleware = basicAuth({
 	challenge: true,
 });
 
-const admin = express.Router();
-
-admin.get("/", (req, res) => {
+app.get("/admin", basicAuthMiddleware, (req, res) => {
 	res.sendFile(path.join(process.cwd(), "public", "admin.html"));
 });
 
-admin.get("/api/rewards", async (req, res) => {
+app.get("/api/admin/rewards", async (req, res) => {
 	try {
 		const rewards = await getRewards();
 		res.json(rewards);
@@ -44,7 +42,7 @@ admin.get("/api/rewards", async (req, res) => {
 	}
 });
 
-admin.post("/api/rewards", async (req, res) => {
+app.post("/api/admin/rewards", async (req, res) => {
 	try {
 		await addReward(req.body);
 		const rewards = await getRewards();
@@ -55,7 +53,7 @@ admin.post("/api/rewards", async (req, res) => {
 	}
 });
 
-admin.put("/api/rewards/:id", async (req, res) => {
+app.put("/api/admin/rewards/:id", async (req, res) => {
 	try {
 		const id = String(req.params.id);
 		await editReward(id, req.body);
@@ -67,7 +65,7 @@ admin.put("/api/rewards/:id", async (req, res) => {
 	}
 });
 
-admin.delete("/api/rewards/:id", async (req, res) => {
+app.delete("/api/admin/rewards/:id", async (req, res) => {
 	try {
 		const id = String(req.params.id);
 		await deleteReward(id);
@@ -78,8 +76,6 @@ admin.delete("/api/rewards/:id", async (req, res) => {
 		res.status(500).json({ error: err.message || "Failed to delete reward" });
 	}
 });
-
-app.use("/admin", basicAuthMiddleware, admin); ///  basicAuthMiddleware,
 
 app.get("/api/rewards", async (req, res) => {
 	try {
