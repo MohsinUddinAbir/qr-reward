@@ -1,13 +1,13 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
-import basicAuth from "express-basic-auth";
 import { addReward, deleteReward, editReward, getReward, getRewards } from "./csvHelper.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
-const username = process.env.BASE_AUTH_USERNAME || "admin";
-const password = process.env.BASE_AUTH_PASSWORD || "admin";
+const password = process.env.BASE_AUTH_PASSWORD || "secret";
+
+app.enable("trust proxy");
 
 const allowedOrigins = ["http://localhost:3000", "http://localhost:5173", "https://qr-reward-three.vercel.app"];
 app.use(
@@ -16,19 +16,10 @@ app.use(
 		origin: allowedOrigins,
 	}),
 );
-app.enable("trust proxy");
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), "public"), { index: "_" }));
 
-const basicAuthMiddleware = basicAuth({
-	realm: "Restricted Area",
-	users: {
-		[username]: password,
-	},
-	challenge: true,
-});
-
-app.get("/admin", basicAuthMiddleware, (req, res) => {
+app.get(`/admin-${password}`, (req, res) => {
 	res.sendFile(path.join(process.cwd(), "public", "admin.html"));
 });
 
