@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import basicAuth from "express-basic-auth";
-import { addReward, deleteReward, editReward, getReward, getRewards } from "./csvHelper.ts";
+import { addReward, deleteReward, editReward, getReward, getRewards } from "./csvHelper.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
