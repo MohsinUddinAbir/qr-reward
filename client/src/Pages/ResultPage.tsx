@@ -1,16 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useBarcodeScanner } from "react-simple-usb-scanner";
+import type { Reward } from "../types";
 
-type ResultData = {
-	BARCODE: string;
-	ITEM: string;
-	"PICTURE LINK": string;
-};
-
-const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackClick: () => void }) => {
+const ResultPage = ({ records, onBackClick }: { records: Reward[]; onBackClick: () => void }) => {
 	const [scanned, setScanned] = useState(false);
 	const [loading] = useState(false);
-	const [record, setRecord] = useState<ResultData | null>(null);
+	const [record, setRecord] = useState<Reward | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
 	// const handleScanResult = (result: IDetectedBarcode[]) => {
@@ -32,7 +27,7 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 	});
 
 	const getRecord = async (code: string) => {
-		const record = records.find((r) => r["BARCODE"] == code);
+		const record = records.find((r) => r["code"] == code);
 		if (!record) {
 			setError("No result found!");
 			return;
@@ -48,6 +43,10 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 			onBackClick();
 		}, seconds * 1000);
 	};
+
+	useEffect(() => {
+		getRecord("1001");
+	}, []);
 
 	return (
 		<div className="w-full">
@@ -65,10 +64,10 @@ const ResultPage = ({ records, onBackClick }: { records: ResultData[]; onBackCli
 			{record ?
 				<div className="text-center py-6">
 					<div className="text-3xl mb-6">Reward</div>
-					<div className="text-3xl mb-6 text-gray-700">{record["BARCODE"]}</div>
-					<div className="text-6xl mb-10 font-bold text-pink-500">{record["ITEM"]}</div>
+					<div className="text-3xl mb-6 text-gray-700">{record["code"]}</div>
+					<div className="text-6xl mb-10 font-bold text-pink-500">{record["title"]}</div>
 					<div className="w-full flex items-center justify-center">
-						<img className="w-full max-w-[600px]" src={record["PICTURE LINK"]} alt="Reward Image" />
+						<img className="w-full max-w-[600px]" src={record["image_url"]} alt="Reward Image" />
 					</div>
 				</div>
 			:	null}
