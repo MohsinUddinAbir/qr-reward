@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useBarcodeScanner } from "react-simple-usb-scanner";
 import type { Reward } from "../types";
+import homeImg from "../assets/home.png";
 
-const ResultPage = ({ records, onBackClick }: { records: Reward[]; onBackClick: () => void }) => {
-	const [scanned, setScanned] = useState(false);
-	const [loading] = useState(false);
+const ResultPage = ({ rewards }: { rewards: Reward[] }) => {
+	const [loading, setLoading] = useState(false);
 	const [record, setRecord] = useState<Reward | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
@@ -20,47 +20,52 @@ const ResultPage = ({ records, onBackClick }: { records: Reward[]; onBackClick: 
 	const { resetBarcode } = useBarcodeScanner({
 		onBarcodeScanned: async (code) => {
 			console.log("Barcode detected via USB:", code);
+			setLoading(true);
 			getRecord(code);
-			setScanned(true);
 		},
-		enabled: true, // Listens globally while true
+		enabled: true,
 	});
 
 	const getRecord = async (code: string) => {
-		const record = records.find((r) => r["code"] == code);
+		const nCode = code.trim().toUpperCase();
+		const record = rewards.find((r) => r["code"] === nCode);
 		if (!record) {
+			setGoBackTimer(3);
 			setError("No result found!");
+			setLoading(false);
 			return;
 		}
-
-		setRecord(record);
 		setGoBackTimer();
+		setRecord(record);
+		setLoading(false);
 	};
 
-	const setGoBackTimer = (seconds = 20) => {
+	const setGoBackTimer = (seconds = 10) => {
 		setTimeout(() => {
 			resetBarcode();
-			onBackClick();
+			setError(null);
+			setRecord(null);
 		}, seconds * 1000);
 	};
 
-	useEffect(() => {
-		getRecord("1001");
-	}, []);
-
 	return (
 		<div className="w-full">
-			<div className="w-full">
-				<button className="cursor-pointer mt-4 ml-6 text-lg text-pink-500" onClick={onBackClick}>
-					Back
-				</button>
-			</div>
-			{!scanned ?
-				<div className="text-3xl py-6 text-center font-bold text-pink-500">Scan your Card</div>
+			{!loading && !error && !record ?
+				<div className="w-full">
+					<button>
+						<img src={homeImg} alt="" />
+					</button>
+				</div>
 			:	null}
+
 			{loading ?
 				<div className="text-center text-3xl py-6 text-gray-700">Loading...</div>
 			:	null}
+
+			{error ?
+				<div className="text-center text-3xl py-6 text-gray-700">{error}</div>
+			:	null}
+
 			{record ?
 				<div className="text-center py-6">
 					<div className="text-3xl mb-6">Reward</div>
@@ -70,9 +75,6 @@ const ResultPage = ({ records, onBackClick }: { records: Reward[]; onBackClick: 
 						<img className="w-full max-w-[600px]" src={record["image_url"]} alt="Reward Image" />
 					</div>
 				</div>
-			:	null}
-			{error ?
-				<div className="text-center text-3xl py-6 text-gray-700">{error}</div>
 			:	null}
 		</div>
 	);

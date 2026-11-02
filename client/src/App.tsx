@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
-import HomePage from "./Pages/HomePage";
-import ResultPage from "./Pages/ResultPage";
 import toast from "react-hot-toast";
+import ResultPage from "./Pages/ResultPage";
 import type { Reward } from "./types";
+import { useEffect, useState } from "react";
 
-const API_URL = import.meta.env.DEV ? "http://localhost:3000/api" : "https://qr-reward-three.vercel.app/api";
+const API_URL = import.meta.env.DEV ? "http://localhost:3000/api" : "/api";
 
 function App() {
-	const [homeScene, setHomeScene] = useState(true);
-	const [records, setRecords] = useState<Reward[]>([]);
+	const [rewards, setRewards] = useState<Reward[]>([]);
 
 	// const fetchCSV = async () => {
 	// 	try {
@@ -27,7 +25,7 @@ function App() {
 	// 			header: true,
 	// 			skipEmptyLines: true,
 	// 			complete: (result) => {
-	// 				setRecords(result.data as Reward[]);
+	// 				setRewards(result.data as Reward[]);
 	// 			},
 	// 		});
 	// 	} catch (error) {
@@ -40,9 +38,10 @@ function App() {
 			const response = await fetch(`${API_URL}/rewards`);
 			const rewards = await response.json();
 			console.log(rewards);
-			setRecords(rewards);
+			setRewards(rewards);
 		} catch (error) {
 			console.error("Error fetching local CSV:", error);
+			toast.error(error instanceof Error ? error.message : "Failed to fetch rewards");
 		}
 	};
 
@@ -50,21 +49,7 @@ function App() {
 		fetchRewards();
 	}, []);
 
-	return (
-		<>
-			{homeScene ?
-				<HomePage
-					onHomeClick={() => {
-						if (records.length == 0) {
-							toast.error("Records not loaded yet!");
-							return;
-						}
-						setHomeScene(false);
-					}}
-				/>
-			:	<ResultPage records={records} onBackClick={() => setHomeScene(true)} />}
-		</>
-	);
+	return <ResultPage rewards={rewards} />;
 }
 
 export default App;

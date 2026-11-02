@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, type SubmitEvent } from "react";
 import toast from "react-hot-toast";
 import type { Reward } from "../types";
 
-const API_URL = import.meta.env.DEV ? "http://localhost:3000/admin/api" : "https://qr-reward-three.vercel.app/admin/api";
+const API_URL = import.meta.env.DEV ? "http://localhost:3000/admin/api" : "/admin/api";
 const EMPTY_REWARD: Reward = { code: "", title: "", image_url: "" };
 
 const isReward = (value: unknown): value is Reward =>
