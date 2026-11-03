@@ -1,7 +1,9 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import path from "path";
-import { addReward, deleteReward, editReward, getReward, getRewards } from "./csvHelper.js";
+import { addReward, deleteReward, editReward, getReward, getRewards } from "./helper.js";
+import { connectMongoDB } from "./db.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -96,6 +98,13 @@ app.get("/", (req, res) => {
 	res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
 
-app.listen(port, () => {
-	console.log(`Server is running on http://localhost:${port}`);
-});
+connectMongoDB()
+	.then(() => {
+		app.listen(port, () => {
+			console.log(`Server is running on http://localhost:${port}`);
+		});
+	})
+	.catch((error: unknown) => {
+		console.error("Failed to start server:", error);
+		process.exitCode = 1;
+	});
