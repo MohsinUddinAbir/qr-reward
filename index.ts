@@ -98,13 +98,11 @@ app.get("/", (req, res) => {
 	res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
 
-connectMongoDB()
-	.then(() => {
-		app.listen(port, () => {
-			console.log(`Server is running on http://localhost:${port}`);
-		});
-	})
-	.catch((error: unknown) => {
-		console.error("Failed to start server:", error);
-		process.exitCode = 1;
-	});
+connectMongoDB().catch((error: unknown) => {
+	console.error("Failed to start server:", error);
+	process.exitCode = 1;
+});
+
+app.listen(port, () => {
+	console.log(`Server is running on http://localhost:${port}`);
+});
