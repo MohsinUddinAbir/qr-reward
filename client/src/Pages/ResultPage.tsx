@@ -48,6 +48,14 @@ const ResultPage = ({ rewards }: { rewards: Reward[] }) => {
 		}, seconds * 1000);
 	};
 
+	const convertGoogleDriveImageUrl = (url: string, size = "w1000") => {
+		if (!url || typeof url !== "string") return url;
+		const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+		if (!match) return url;
+		const fileId = match[1];
+		return `https://drive.google.com/thumbnail?id=${fileId}&sz=${size}`;
+	};
+
 	return (
 		<div className="w-full">
 			{!loading && !error && !record ?
@@ -72,7 +80,7 @@ const ResultPage = ({ rewards }: { rewards: Reward[] }) => {
 					<div className="text-3xl mb-6 text-gray-700">{record["code"]}</div>
 					<div className="text-6xl mb-10 font-bold text-pink-500">{record["title"]}</div>
 					<div className="w-full flex items-center justify-center">
-						<img className="w-full max-w-[600px]" src={record["image_url"]} alt="Reward Image" />
+						<img className="w-full max-w-[600px]" src={convertGoogleDriveImageUrl(record["image_url"])} alt="Reward Image" />
 					</div>
 				</div>
 			:	null}
