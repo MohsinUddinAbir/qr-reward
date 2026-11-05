@@ -13,6 +13,7 @@ export default defineConfig({
 	build: {
 		outDir: "../public",
 		emitAssets: true,
+		emptyOutDir: true,
 		rollupOptions: {
 			input: {
 				main: resolve(__dirname, "index.html"),

@@ -124,12 +124,12 @@ function Admin() {
 		setEditingCode(null);
 	};
 
-	const convertGoogleDriveImageUrl = (url: string, size = "w1000") => {
+	const convertGoogleDriveImageUrl = (url: string) => {
 		if (!url || typeof url !== "string") return url;
 		const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
 		if (!match) return url;
 		const fileId = match[1];
-		return `https://drive.google.com/thumbnail?id=${fileId}&sz=${size}`;
+		return `https://drive.google.com/thumbnail?id=${fileId}`;
 	};
 
 	useEffect(() => {
@@ -198,7 +198,15 @@ function Admin() {
 										<td className="px-4 py-3">{reward.code}</td>
 										<td className="px-4 py-3">{reward.title}</td>
 										<td className="px-4 py-3">
-											<img src={convertGoogleDriveImageUrl(reward.image_url)} alt={reward.title} className="h-12 w-12 rounded object-cover" />
+											<img
+												src={convertGoogleDriveImageUrl(reward.image_url)}
+												alt={reward.title}
+												onError={(e) => {
+													const img = e.currentTarget;
+													console.error("Image failed to load:", img.src);
+												}}
+												className="h-12 w-12 rounded object-cover"
+											/>
 										</td>
 										<td className="px-4 py-3">
 											<div className="flex gap-2">

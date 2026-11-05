@@ -60,7 +60,9 @@ const ResultPage = ({ rewards }: { rewards: Reward[] }) => {
 		<div className="w-full">
 			{!loading && !error && !record ?
 				<div className="w-full">
-					<button>
+					<button
+						// onClick={() => getRecord("1001")}
+						className="w-full flex items-center justify-center">
 						<img src={homeImg} alt="" />
 					</button>
 				</div>
@@ -80,7 +82,15 @@ const ResultPage = ({ rewards }: { rewards: Reward[] }) => {
 					<div className="text-3xl mb-6 text-gray-700">{record["code"]}</div>
 					<div className="text-6xl mb-10 font-bold text-pink-500">{record["title"]}</div>
 					<div className="w-full flex items-center justify-center">
-						<img className="w-full max-w-[600px]" src={convertGoogleDriveImageUrl(record["image_url"])} alt="Reward Image" />
+						<img
+							src={convertGoogleDriveImageUrl(record["image_url"])}
+							alt={record["title"]}
+							onError={(e) => {
+								const img = e.currentTarget;
+								console.error("Image failed to load:", img.src);
+							}}
+							className="w-full max-w-[600px]"
+						/>
 					</div>
 				</div>
 			:	null}
